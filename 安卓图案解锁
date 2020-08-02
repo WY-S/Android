@@ -1,0 +1,193 @@
+安卓图案解锁的密码有这样的一些特点：
+1.每个数字最多只会被使用一次。
+2.如果想直接连接两个数字，但是线段中会经过另一个数字，当且仅有那个数字已经在之前就被使用过了，才会合法。(比如你想从1直接连接到9，那么要么是1->3->9,要么是3在之前已经被使用过了，然后才能直接从1->9)
+输入描述:
+1
+2
+多组输入
+每组输入占一行，包含一串数字(1~9)，长度不超过30
+输出描述:
+1
+输出这个安卓图案解锁是否合法，如果合法输出"YES",反之输出"NO" (请参照样例输出，不要输出引号)
+示例1
+输入
+14569
+1953
+15963
+15953
+输出
+YES
+NO
+YES
+NO
+ 
+思路：
+建立 一个二维数组 isok[i][j] 代表 从i走到j是否能走。
+用一个数组 cnt[i] 来记录数字i在字符串中出现的次数。
+ 
+然后直接模拟即可。
+（题目中有错误的描述， 1-3-9 应该是 1-5-9 ） 出题人也不改题面，无奈啊。
+细节见代码：
+
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <cmath>
+#include <queue>
+#include <stack>
+#include <map>
+#include <set>
+#include <vector>
+#include <iomanip>
+#define ALL(x) (x).begin(), (x).end()
+#define rt return
+#define sz(a) int(a.size())
+#define all(a) a.begin(), a.end()
+#define rep(i,x,n) for(int i=x;i<n;i++)
+#define repd(i,x,n) for(int i=x;i<=n;i++)
+#define pii pair<int,int>
+#define pll pair<long long ,long long>
+#define gbtb ios::sync_with_stdio(false),cin.tie(0),cout.tie(0)
+#define MS0(X) memset((X), 0, sizeof((X)))
+#define MSC0(X) memset((X), '\0', sizeof((X)))
+#define pb push_back
+#define mp make_pair
+#define fi first
+#define se second
+#define eps 1e-6
+#define gg(x) getInt(&x)
+#define db(x) cout<<"== [ "<<x<<" ] =="<<endl;
+using namespace std;
+typedef long long ll;
+ll gcd(ll a,ll b){return b?gcd(b,a%b):a;}
+ll lcm(ll a,ll b){return a/gcd(a,b)*b;}
+ll powmod(ll a,ll b,ll MOD){ll ans=1;while(b){if(b%2)ans=ans*a%MOD;a=a*a%MOD;b/=2;}return ans;}
+inline void getInt(int* p);
+const int maxn=1000010;
+const int inf=0x3f3f3f3f;
+/*** TEMPLATE CODE * * STARTS HERE ***/
+char s[200];
+int isok[11][11];
+int cnt[11];
+int main()
+{
+    // freopen("D:\\code\\text\\input.txt","r",stdin);
+    //freopen("D:\\code\\text\\output.txt","w",stdout);
+    while(cin>>s)
+    {
+        int len=strlen(s);
+        // if(len>9)
+        // {
+        //     cout<<"NO"<<endl;
+        //     continue;
+        // }
+        int flag=1;
+        repd(i,1,9)
+        {
+            cnt[i]=0;
+            repd(j,1,9)
+            {
+                isok[i][j]=1;
+            }
+        }
+        isok[1][3]=isok[3][1]=0;
+        isok[9][3]=isok[3][9]=0;
+        isok[9][7]=isok[7][9]=0;
+        isok[1][7]=isok[7][1]=0;
+        isok[1][9]=isok[9][1]=0;
+        isok[7][3]=isok[3][7]=0;
+        isok[4][6]=isok[6][4]=0;
+        isok[2][8]=isok[8][2]=0;
+        int last=s[0]-'0';
+        int x;
+        x=last;
+        cnt[x]++;
+        if(x==2)
+        {
+            isok[1][3]=isok[3][1]=1;
+        }else if(x==4)
+        {
+            isok[1][7]=isok[7][1]=1;
+        }else if(x==5)
+        {
+            isok[4][6]=isok[6][4]=1;
+            isok[2][8]=isok[8][2]=1;
+            isok[3][7]=isok[7][3]=1;
+            isok[1][9]=isok[9][1]=1;
+        }else if(x==6)
+        {
+            isok[3][9]=isok[9][3]=1;
+        }else if(x==8)
+        {
+            isok[7][9]=isok[9][7]=1;
+        }
+        rep(i,1,len)
+        {
+            x=s[i]-'0';
+            cnt[x]++;
+            if(!isok[last][x])
+            {
+                flag=0;
+                break;
+            }else
+            {
+                if(x==2)
+                {
+                    isok[1][3]=isok[3][1]=1;
+                }else if(x==4)
+                {
+                    isok[1][7]=isok[7][1]=1;
+                }else if(x==5)
+                {
+                    isok[4][6]=isok[6][4]=1;
+                    isok[2][8]=isok[8][2]=1;
+                    isok[3][7]=isok[7][3]=1;
+                    isok[1][9]=isok[9][1]=1;
+                }else if(x==6)
+                {
+                    isok[3][9]=isok[9][3]=1;
+                }else if(x==8)
+                {
+                    isok[7][9]=isok[9][7]=1;
+                }
+            }
+            last=x;
+        }
+        repd(i,1,9){
+            if(cnt[i]>1){
+                flag=0;
+            }
+        }
+        if(flag)
+        {
+            cout<<"YES"<<endl;
+        }else{
+            cout<<"NO"<<endl;
+        }
+ 
+    }
+     
+     
+     
+    return 0;
+}
+ 
+inline void getInt(int* p) {
+    char ch;
+    do {
+        ch = getchar();
+    } while (ch == ' ' || ch == '\n');
+    if (ch == '-') {
+        *p = -(getchar() - '0');
+        while ((ch = getchar()) >= '0' && ch <= '9') {
+            *p = *p * 10 - ch + '0';
+        }
+    }
+    else {
+        *p = ch - '0';
+        while ((ch = getchar()) >= '0' && ch <= '9') {
+            *p = *p * 10 + ch - '0';
+        }
+    }
+}
